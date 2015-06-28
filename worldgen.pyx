@@ -12,19 +12,20 @@ cdef gauss(double variance=1.0):
 
 
 class HeightMap:
-    def __init__(self,int size,int height,int noise):
+    def __init__(self,int size,int height,int noise,int type_):
         self.height = np.zeros([2**size+1,2**size+1],dtype=np.double)
         self.size = size
         self.blocksize = 2**size
         self.defaultheight = height
         self.noise = noise*self.defaultheight/self.blocksize
+        self.type_ = type_
     def calculate_square(self, int size,int xpos, int ypos):
         if size < 1:
             return
         cdef int realsize = 2**size
         corners = [self.height[xpos,ypos],self.height[xpos+realsize,ypos],
                    self.height[xpos,ypos+realsize],self.height[xpos+realsize,ypos+realsize]]
-        mean = sum(corners)/4
+        mean = self.calc_new_height(corners)
         self.height[xpos+realsize//2,ypos+realsize//2] = mean + gauss(realsize*self.noise)
     def calculate_tilted(self,int size,int xpos,int ypos):
         if size < 1:
@@ -32,7 +33,7 @@ class HeightMap:
         cdef int realsize = 2**size
         corners = [self.height[xpos+realsize/2,ypos],self.height[xpos+realsize/2,ypos+realsize],
                    self.height[xpos,ypos+realsize/2],self.height[xpos+realsize,ypos+realsize/2]]
-        mean = sum(corners)/4
+        mean = self.calc_new_height(corners)
         self.height[xpos+realsize//2,ypos+realsize//2] = mean + gauss(realsize*self.noise)
     def scan_squares(self,int size):
         print("building level ",size)
@@ -55,11 +56,16 @@ class HeightMap:
         oldmax = np.amax(self.height)
         factor = (newmax-newmin)/(oldmax-oldmin)
         self.height = factor*(self.height-oldmin)+newmin
-
-
+    def calc_new_height(self,corners):
+        if self.type_ == 0: #mean
+            return sum(corners)/4
+        elif self.type_ == 1: #maxmin
+            return (max(corners)+min(corners))/2
+        elif self.type_ == 2: #max
+            return (sum(corners)-min(corners))/3
 def main():
     srand(time.time())
-    h = HeightMap(10,200,10)
+    h = HeightMap(10,200,10,2)
     h.calculate()
     print(h.height)
     h.rescale(0,255)
