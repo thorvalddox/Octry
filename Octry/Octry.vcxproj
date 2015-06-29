@@ -78,6 +78,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="WorldGen.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WorldGen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
