@@ -1,6 +1,6 @@
 #include "octree.h"
 #include <iostream>
-
+#include <iterator>
 template class octree<int>;
 
 template <class T>
@@ -38,6 +38,7 @@ void octree<T>::addnode(node_pos parent, int offset)
 {
 	array.push_back(oc_node<T>(array[parent].sub[offset].data,
 		offset, array[parent].depth + 1));
+	array.back().parent = parent;
 	array[parent].sub[offset].next = array.size() - 1;
 }
 
@@ -49,11 +50,7 @@ void octree<T>::collapsenode(node_pos n)
 		int i;
 		for (i = 0; i < 8; i++)
 		{
-			if (array[n].sub[i].next) 
-			{
-				std::cerr << "Collapsed node had children!" << std::endl;
-				throw;
-			}
+			if (array[n].sub[i].next) return;
 			if (array[n].sub[0].data != array[n].sub[i].data) return;
 		}
 		n = removenode(n);
@@ -63,21 +60,19 @@ void octree<T>::collapsenode(node_pos n)
 template <class T>
 node_pos octree<T>::removenode(node_pos n)
 {
+	array[array[n].parent].sub[array[n].offset].data = array[n].sub[0].data;
+	array[array[n].parent].sub[array[n].offset].next = 0;
 	if (n == array.size() - 1)
 	{
 		n = array[n].parent;
 	}
 	else if (array[n].parent == array.size() - 1)
 	{	
-		array[array[n].parent].sub[array[n].offset].data = array[n].sub[0].data;
-		array[array[n].parent].sub[array[n].offset].next = 0;
 		array[n] = array[array.size() - 1];
 		array[array[n].parent].sub[array[n].offset].next = n;
 	}
 	else
 	{
-		array[array[n].parent].sub[array[n].offset].data = array[n].sub[0].data;
-		array[array[n].parent].sub[array[n].offset].next = 0;
 		node_pos parent = array[n].parent;
 		array[n] = array[array.size() - 1];
 		array[array[n].parent].sub[array[n].offset].next = n;
@@ -97,10 +92,12 @@ node_pos octree<T>::setblock(T t, node_pos pos)
 		if (n = array[pos].sub[i].next)
 		{
 			pos = setblock (t, n);
-			pos = removenode(array[pos].sub[i].next);
 		}
 	}
-	return array[pos].parent;
+	int offset = array[pos].offset;
+	pos = removenode(pos);
+	array[pos].sub[offset].data = t;
+	return pos;
 }
 
 template <class T>
@@ -108,9 +105,10 @@ void octree<T>::setblock(T t, int x, int y, int z, int depth)
 {
 	int size = 1<<this->depth;
 	node_pos pos = 0;
+	int offset;
 	while (size > 1<<depth)
 	{
-		int offset = 0;
+		offset = 0;
 		offset += ((x&size/2)?4:0);
 		offset += ((y&size/2)?2:0);
 		offset += ((z&size/2)?1:0);
@@ -142,7 +140,23 @@ T octree<T>::get(int x, int y, int z)
 }
 
 template <class T>
-void octree<T>::print(node_pos n)
+void octree<T>::print()
 {
-	
+	int k;
+	for (k = 0; k < array.size(); k++)
+	{
+		std::cout << "Node: " << k << "\n";
+		int i;
+		for (i = 0; i < 8; i++)
+			std::cout << "\t" << (array[k].sub[i].next?"Next: ": "Data: \t \t") 
+							  << (array[k].sub[i].next?array[k].sub[i].next: array[k].sub[i].data) 
+							  << "\n";
+		std::cout << std::endl;
+	}
+}
+
+template <class T>
+int octree<T>::getsize()
+{
+	return array.size();
 }

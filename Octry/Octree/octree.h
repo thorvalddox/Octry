@@ -26,16 +26,20 @@ private:
 	int depth;
 	int size;
 	std::vector<oc_node<T> > array;
-	void setblock(T t, int x, int y, int z, int depth);
+	
 	node_pos setblock(T t, node_pos pos);
+	
 	void addnode(node_pos parent, int offset);
 	node_pos removenode(node_pos n);
 	void collapsenode(node_pos node);
 	
 public:
-	octree(int dept, T first);
+	int getsize();
+	void setblock(T t, int x, int y, int z, int depth);
+	
+	octree(int depth, T first);
 	~octree();
 	void set(T t, int x, int y, int z);
 	T get(int x, int y, int z);
-	void print(node_pos n);
+	void print();
 };
