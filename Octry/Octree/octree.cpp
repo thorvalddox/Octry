@@ -1,6 +1,7 @@
 #include "octree.h"
 #include <iostream>
 #include <iterator>
+
 template class octree<int>;
 
 template <class T>
@@ -18,7 +19,7 @@ oc_node<T>::oc_node(T t, int offset, int depth):offset(offset),depth(depth)
 template<class T>
 octree<T>::octree(int depth, T first):depth(depth)
 {
-	array.push_back(oc_node<T>(first, 0, depth));
+	array.push_back(oc_node<T>(first, 0, 0));
 }
 
 template <class T>
@@ -28,13 +29,13 @@ octree<T>::~octree()
 }
 
 template <class T>
-void octree<T>::set(T t, int x, int y, int z)
+inline void octree<T>::set(T t, int x, int y, int z)
 {
 	return setblock(t, x, y, z, 0);
 }
 
 template <class T>
-void octree<T>::addnode(node_pos parent, int offset)
+inline void octree<T>::addnode(node_pos parent, int offset)
 {
 	array.push_back(oc_node<T>(array[parent].sub[offset].data,
 		offset, array[parent].depth + 1));
@@ -58,8 +59,35 @@ void octree<T>::collapsenode(node_pos n)
 }
 
 template <class T>
+void octree<T>::copy(node_pos dest, node_pos src)
+{
+	array[dest] = array[src];
+	array[array[src].parent].sub[array[src].offset].next = dest;
+	int i;
+	for (i = 0; i < 8; i++)
+	{
+		array[array[src].sub[i].next].parent = dest;
+	}
+} 
+
+template <class T>
 node_pos octree<T>::removenode(node_pos n)
 {
+	//debug
+	int i;
+	node_pos offset = array[n].offset;
+	/*
+	for (i = 0; i < 8; i++)
+	{
+		if (array[n].sub[i].next) 
+			std::cerr << "WARNING! YOU'RE ABOUT TO DELETE A NODE WITH CHILDREN!\n" ;
+	}
+	
+	if (array[n].parent == 121114) 
+	{
+		std::cerr << n << "blabla\n";
+	}
+	*/
 	array[array[n].parent].sub[array[n].offset].data = array[n].sub[0].data;
 	array[array[n].parent].sub[array[n].offset].next = 0;
 	if (n == array.size() - 1)
@@ -68,15 +96,17 @@ node_pos octree<T>::removenode(node_pos n)
 	}
 	else if (array[n].parent == array.size() - 1)
 	{	
-		array[n] = array[array.size() - 1];
-		array[array[n].parent].sub[array[n].offset].next = n;
+		//std::cerr << "CASE 2\n";
+		copy(n, array.size() - 1);
+		//check (0);
 	}
 	else
 	{
+		//std::cerr << "CASE 3\n";
 		node_pos parent = array[n].parent;
-		array[n] = array[array.size() - 1];
-		array[array[n].parent].sub[array[n].offset].next = n;
+		copy(n, array.size() - 1);
 		n = parent;
+		//check(0);
 	}
 	array.pop_back();
 	return n;
@@ -114,7 +144,10 @@ void octree<T>::setblock(T t, int x, int y, int z, int depth)
 		offset += ((z&size/2)?1:0);
 		size /= 2;
 		if (!array[pos].sub[offset].next)
-			addnode(pos, offset);
+			{
+				if (array[pos].sub[offset].data == t) return;
+				addnode(pos, offset);
+			}
 		pos = array[pos].sub[offset].next;
 	}
 	pos = setblock (t, pos);
@@ -159,4 +192,16 @@ template <class T>
 int octree<T>::getsize()
 {
 	return array.size();
+}
+
+template <class T>
+int octree<T>::check(node_pos n)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		if (array[n].sub[i].next == 0) continue;
+		if (array[array[n].sub[i].next].parent != n)
+			std::cerr << "ERROR! Tree not correct anymore.\n";
+		check (array[n].sub[i].next);
+	}
 }

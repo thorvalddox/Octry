@@ -188,5 +188,14 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+#GCC
+
+#assembly
+*.s
+
+#object files
+*.o
+
 #executables
 *.exe
+*.out
