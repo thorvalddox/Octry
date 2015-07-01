@@ -2,8 +2,6 @@
 #include <iostream>
 #include <iterator>
 
-template class octree<int>;
-
 template <class T>
 oc_node<T>::oc_node(T t, int offset, int depth):offset(offset),depth(depth)
 {
@@ -205,3 +203,8 @@ int octree<T>::check(node_pos n)
 		check (array[n].sub[i].next);
 	}
 }
+
+
+// Implementations
+
+template class octree<int>;
