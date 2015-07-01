@@ -18,8 +18,12 @@ release:
 clean: 
 	rm *.out
 
+doxygen:
+	doxygen config
+	ln -s html/index.html doc/index.html
+
 %.out: %.o $(MODULES)
-	$(COMPILER) $< $(MODULES) -o $@ $(LIBS) $(OPTIONS)
+	$(COMPILER) $< $(MODULES) -o build/$@ $(LIBS) $(OPTIONS)
 
 %.o: %.cpp
 	$(COMPILER) -c $< $(HEADERS) -o $@ $(OPTIONS)

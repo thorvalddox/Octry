@@ -1,8 +1,0 @@
-[Desktop Entry]
-Comment=pulls from the repository
-Terminal=true
-Name=update
-Exec=git pull
-Type=Application
-Icon=git
-Name[en_US]=pull
