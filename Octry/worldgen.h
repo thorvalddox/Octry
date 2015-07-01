@@ -90,7 +90,7 @@ namespace worldgen
 		/** Generates the world ans returns the correct octree.
 		 * 
 		 */
-		octree<int> build_octree();
+		octree<int> * build_octree();
 
 
 	private:
