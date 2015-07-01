@@ -9,7 +9,7 @@ namespace worldgen
 
 	LandScape::LandScape(int layers) :
 		size((1<<layers) + 1),
-		heights(size, std::vector<double>(size, 0.0))
+		heights(size, std::vector<double>(size, (double)(size/2)))
 	{
 		//
 	}
@@ -26,6 +26,12 @@ namespace worldgen
 
 	}
 
+	void LandScape::add(const point & position, double value)
+	{
+		heights[position.x][position.y] += value;
+
+	}
+
 	void LandScape::print(std::ostream * out)
 	{
 		for (vector<double> row : heights)
@@ -38,17 +44,22 @@ namespace worldgen
 		}
 	}
 
-	LandScape & LandScape::compress(int layer)
+	LandScape * LandScape::compress(int layer)
 	{
 		int blocksize = 1<<layer;
+		LandScape * newls = new LandScape(*this); //make pointer to copy of this
 		for (int x=0;x<size;x++)
 		{
 			int floorx = (x/blocksize)*blocksize; //rounds x down to multiple of blocksize
 			for (int y=0;y<size;y++)
 			{
-
+				int floory = (x/blocksize)*blocksize; //rounds y down to multiple of blocksize)
+				int floorval = ((int)get({floorx,floory})/blocksize)*blocksize; /// rounds z down to multiple of blocksize
+				newls->set({x,y},floorval);
 			}
 		}
+		cout << "exiting compression ...\n";
+		return(newls);
 	}
 
 	Square::Square(const point & topleft, int layers, bool tilted)
@@ -96,7 +107,7 @@ namespace worldgen
 
 	void HeightMap::calculate_step(int layer)
 	{
-		cout << "building layer " << layer << std::endl;
+		cout << "generation layer " << layer << std::endl;
 		int stepsize = 1 << layer;
 		for (int x = 0; x < landscape.size-1; x += stepsize)
 		{
@@ -128,6 +139,24 @@ namespace worldgen
 		{
 			calculate_step(l);
 		}
+	}
+
+	octree<int> * HeightMap::build_octree()
+	{
+		calculate();
+		LandScape * prev = landscape.compress(layers);
+		cout << "exited compression ...\n";
+		/*for (int layer = layers-1;layer <= 0;layer--)
+		{
+			cout << "building layer " << layer << std::endl;
+			LandScape * next = landscape.compress(layer);
+			std::stringstream filename;
+			filename << "compress" << layer << ".txt";
+			std::ofstream outfile(filename.str());
+			next->print(&outfile);
+
+		}*/
+		return(0);
 	}
 	
 }

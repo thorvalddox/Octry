@@ -18,7 +18,8 @@ splot "worldgen.txt" u 1:2:3 not
 unset table
 unset contour
 
+set cbrange [300:700]
 set palette defined (0 "blue", 1 "green")
 
 
-plot 'worldgen.txt' matrix with image, "contours.dat" u 1:2 lc 0 w l not
+plot 'build/worldgen.txt' matrix with image, "contours.dat" u 1:2 lc 0 w l not

@@ -6,7 +6,7 @@ LIBS=-LOctree/
 HEADERS=-IOctree/
 MODULES=worldgen.o Octree/octree.o
 
-all: testworld.out
+all: testworld.out testworldgen.out
 
 testworld: testworld.out
 

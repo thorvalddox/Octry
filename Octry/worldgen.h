@@ -8,7 +8,9 @@
 #include <numeric>
 #include <iostream>
 #include <ostream>
+#include <fstream>
 #include <iomanip>
+#include <sstream>
 #include "Octree/octree.h"
 
 
@@ -38,10 +40,12 @@ namespace worldgen
 		double get(const point & position) const;
 		/// setter method
 		void set(const point & position, double);
+		/// same as set but will add a value to the existing one.
+		void add(const point & position, double);
 		/// will export the Landscape to a given ofstream. If ofstream is a file, it can be read by buildmap.gp
 		void print(std::ostream * );
 		/// gives a compressed version of the Landscape. Used for building octrees.
-		LandScape & compress(int layer);
+		LandScape * compress(int layer);
 
 	public:
 		int size;
@@ -83,6 +87,9 @@ namespace worldgen
 		HeightMap(int layers, double height, double noise);
 		/// calculates the height of the landscape. After doing this, the results are stored in the landscape member.
 		void calculate();
+		/** Generates the world ans returns the correct octree.
+		 * 
+		 */
 		octree<int> build_octree();
 
 
