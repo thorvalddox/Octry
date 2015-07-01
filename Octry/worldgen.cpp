@@ -38,6 +38,19 @@ namespace worldgen
 		}
 	}
 
+	LandScape & LandScape::compress(int layer)
+	{
+		int blocksize = 1<<layer;
+		for (int x=0;x<size;x++)
+		{
+			int floorx = (x/blocksize)*blocksize; //rounds x down to multiple of blocksize
+			for (int y=0;y<size;y++)
+			{
+
+			}
+		}
+	}
+
 	Square::Square(const point & topleft, int layers, bool tilted)
 	{
 		size = 1<<layers;
