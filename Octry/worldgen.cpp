@@ -41,7 +41,6 @@ namespace worldgen
 	Square::Square(const point & topleft, int layers, bool tilted)
 	{
 		size = 1<<layers;
-		int halfsize = size / 2;
 		corners.resize(4);
 		if (!tilted)
 		{

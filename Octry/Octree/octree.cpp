@@ -72,9 +72,8 @@ template <class T>
 node_pos octree<T>::removenode(node_pos n)
 {
 	//debug
-	int i;
-	node_pos offset = array[n].offset;
 	/*
+	int i;
 	for (i = 0; i < 8; i++)
 	{
 		if (array[n].sub[i].next) 
@@ -199,9 +198,13 @@ int octree<T>::check(node_pos n)
 	{
 		if (array[n].sub[i].next == 0) continue;
 		if (array[array[n].sub[i].next].parent != n)
+		{
 			std::cerr << "ERROR! Tree not correct anymore.\n";
+			return 1;		
+		}
 		check (array[n].sub[i].next);
 	}
+	return 0;
 }
 
 
