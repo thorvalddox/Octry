@@ -6,11 +6,7 @@ LIBS=-LOctree/
 HEADERS=-IOctree/
 MODULES=worldgen.o Octree/octree.o
 
-<<<<<<< HEAD
-all: testworld.out testworldgen.out
-=======
-all: release testworld.out
->>>>>>> d764507c81ce3df72060e6e958798a3944fc828f
+all: release testworld.out testworldgen.out
 
 debug: 
 	$(eval OPTIONS+=-g -Og)

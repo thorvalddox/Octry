@@ -7,7 +7,7 @@ namespace worldgen
 		return(1.0 / RAND_MAX*(rand() - rand()));
 	}
 
-	LandScape::LandScape(int layers) :
+	LandScape::LandScape(int layers, bool raise) :
 		size((1<<layers) + 1),
 		heights(size, std::vector<double>(size, (double)(size/2)))
 	{
@@ -53,12 +53,12 @@ namespace worldgen
 			int floorx = (x/blocksize)*blocksize; //rounds x down to multiple of blocksize
 			for (int y=0;y<size;y++)
 			{
-				int floory = (x/blocksize)*blocksize; //rounds y down to multiple of blocksize)
+				int floory = (y/blocksize)*blocksize; //rounds y down to multiple of blocksize)
 				int floorval = ((int)get({floorx,floory})/blocksize)*blocksize; /// rounds z down to multiple of blocksize
 				newls->set({x,y},floorval);
 			}
 		}
-		cout << "exiting compression ...\n";
+		//cout << "exiting compression ...\n";
 		return(newls);
 	}
 
@@ -134,7 +134,7 @@ namespace worldgen
 
 	void HeightMap::calculate()
 	{
-		landscape.set(point{ landscape.size / 2, landscape.size / 2 }, height);
+		landscape.add(point{ landscape.size / 2, landscape.size / 2 }, height);
 		for (int l = layers-1; l > 0; l--)
 		{
 			calculate_step(l);
@@ -144,19 +144,46 @@ namespace worldgen
 	octree<int> * HeightMap::build_octree()
 	{
 		calculate();
-		LandScape * prev = landscape.compress(layers);
-		cout << "exited compression ...\n";
-		/*for (int layer = layers-1;layer <= 0;layer--)
+		LandScape * prev = new LandScape(layers,false);
+		octree<int> * wmap = new octree<int>(layers,0);
+		cout << "building layer " << layers << "\n";
+		for (int layer = layers-1;layer >= 0;layer--)
 		{
+			int size = (1<<layer);
 			cout << "building layer " << layer << std::endl;
 			LandScape * next = landscape.compress(layer);
 			std::stringstream filename;
 			filename << "compress" << layer << ".txt";
 			std::ofstream outfile(filename.str());
 			next->print(&outfile);
+			//build octree
+			for (int x = 0;x<next->size;x+=size) //loop over x, but select blocks
+			{
+				for (int y = 0;y<next->size;y+=size) // select block
+				{
+					point pos{x,y};
+					int newheight = next->get(pos);
+					int oldheight = prev->get(pos);
+					if (oldheight < newheight)
+					{
+						for (int z=oldheight;z<newheight;z+=size)
+						{
+							wmap->setblock(1,x,y,z,layer);
+						}
+					}
+					else
+					{
+						for (int z=newheight;z<oldheight;z+=size)
+						{
+							wmap->setblock(0,x,y,z,layer);
+						}
 
-		}*/
-		return(0);
+					}
+					
+				}
+			}
+			prev = next;
+		}
+		return(wmap);
 	}
-	
 }
