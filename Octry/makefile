@@ -1,19 +1,25 @@
 #The makefile
 
 COMPILER=g++ 
-OPTIONS = -Wall -std=c++11
+OPTIONS=-Wall -std=c++11
 LIBS=-LOctree/
 HEADERS=-IOctree/
 MODULES=worldgen.o Octree/octree.o
 
-all: testworld.out
+all: release testworld.out
 
-testworld: testworld.out
+debug: 
+	$(eval OPTIONS+=-g -Og)
+profile:
+	$(eval OPTIONS+=-g -pg -Ofast)
+release: 
+	$(eval OPTIONS+=-Ofast -static -s)
 
-testtree: Octree/testree.out
+clean: 
+	rm *.out
 
-%.out : %.o $(MODULES)
+%.out: %.o $(MODULES)
 	$(COMPILER) $< $(MODULES) -o $@ $(LIBS) $(OPTIONS)
 
-%.o : %.cpp *.h
+%.o: %.cpp
 	$(COMPILER) -c $< $(HEADERS) -o $@ $(OPTIONS)
