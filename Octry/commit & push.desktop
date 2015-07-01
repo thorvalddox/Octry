@@ -1,0 +1,7 @@
+[Desktop Entry]
+Comment=commits and pushes
+Terminal=true
+Name=commit & push
+Exec=bash commit_push.sh
+Type=Application
+Icon=git

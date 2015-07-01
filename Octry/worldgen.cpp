@@ -1,4 +1,4 @@
-#include "WorldGen.h"
+#include "worldgen.h"
 
 namespace worldgen
 {

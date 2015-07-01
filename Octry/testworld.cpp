@@ -1,5 +1,5 @@
 #include "Octree/octree.h"
-#include "WorldGen.h"
+#include "worldgen.h"
 
 #include <iostream>
 
