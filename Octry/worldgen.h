@@ -34,8 +34,9 @@ namespace worldgen
 	class LandScape {
 	public:
 		/// contructor. 
-		/// @param[layers] The amount of layers
-		LandScape(int layers);
+		/// @param layers The amount of layers
+		/// @param raise true:layers initiate at half the size. false: layers initiate at 0
+		LandScape(int layers,bool raise=true);
 		/// getter method
 		double get(const point & position) const;
 		/// setter method

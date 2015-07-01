@@ -22,4 +22,10 @@ set cbrange [300:700]
 set palette defined (0 "blue", 1 "green")
 
 
-plot 'build/worldgen.txt' matrix with image, "contours.dat" u 1:2 lc 0 w l not
+plot 'worldgen.txt' matrix with image
+
+do for [t=0:9] {
+print("build compression ".t)
+set output "worldgen".t."png"
+plot 'compress'.t.'.txt' matrix with image
+}
