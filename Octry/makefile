@@ -4,7 +4,7 @@ COMPILER=g++
 OPTIONS=-Wall -std=c++11
 LIBS=-LOctree/
 HEADERS=-IOctree/
-MODULES=worldgen.o Octree/octree.o
+MODULES=worldgen.o Octree/octree.o tools.o xml/pugixml.o
 
 all: release testworld.out testworldgen.out
 
@@ -25,5 +25,5 @@ doxygen:
 %.out: %.o $(MODULES)
 	$(COMPILER) $< $(MODULES) -o build/$@ $(LIBS) $(OPTIONS)
 
-%.o: %.cpp
+%.o: %.cpp *.h
 	$(COMPILER) -c $< $(HEADERS) -o $@ $(OPTIONS)
