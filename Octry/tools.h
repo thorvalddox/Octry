@@ -1,12 +1,15 @@
 #include "xml/pugixml.hpp"
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <cmath>
+#include <string>
+
 
 using std::stringstream;
 using std::vector;
-
-
+using std::ostream;
+using std::string;
 
 namespace tools
 {
@@ -23,6 +26,7 @@ public:
     Position(int,int,int);
     Position operator+(Position);
     Position operator-(Position);
+    ostream * print(ostream *);
 };
 
 class Direction
@@ -31,14 +35,14 @@ public:
     double x;
     double y;
     double z;
-    Direction(double,double,double)
+    Direction(double,double,double);
     bool operator==(Direction);
     double size();
-    Direction normate();
+    Direction normalise();
     /// the equi
-    Direction equi_dist(Position);
-    Direction horiz_dist(Position);
-    Direction vert_distance(Position);
+    double equi_dist(Position);
+    double horiz_dist(Position);
+    double vert_dist(Position);
 };
 
 
@@ -50,7 +54,7 @@ class Relief
 public:
     Relief(stringstream *);
 
-
+    bool check_inside(Position pos,Position origin, Direction dir, double size);
 
 private:
     /**lineair extrapolation
@@ -71,8 +75,15 @@ private:
 
 class Tool
 {
-
+public:
+	Tool(string name,Relief *,double);
+private:
+	string name;
+	Relief * relief;
+	double size;
 };
 
-
+typedef vector<Tool> toolbook;
+toolbook loadtools();
+	
 };
