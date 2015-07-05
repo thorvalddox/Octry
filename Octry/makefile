@@ -14,6 +14,9 @@ profile:
 	$(eval OPTIONS+=-g -pg -Ofast)
 release: 
 	$(eval OPTIONS+=-Ofast -static -s)
+opengl:
+	$(eval LIBS+=-lGL -lX11)
+
 
 clean: 
 	rm *.out
