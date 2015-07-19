@@ -25,7 +25,7 @@ int altmain()
     std::cout << "Testing worldgen\n";
     std::ofstream outfile("worldgen.txt");
     worldgen::HeightMap heightmap(10, 40, 10);
-    //heightmap.calculate();
+    heightmap.calculate();
     worldmap = heightmap.build_octree();
     glworlddata = worldmap->graphify();
     std::cout << "Done\n";
@@ -57,6 +57,12 @@ GLenum err;
 int gui_init()
 {
 	altmain();
+	GLint version;
+	GLint subversion;
+	glGetIntegerv(GL_MAJOR_VERSION, &version);
+	glGetIntegerv(GL_MINOR_VERSION, &subversion);
+	std::cout << version << "." << subversion << std::endl;
+	std::cout << offsetof(cube<int>,data);
 	program = compile_shaders("shaders/terrain");
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);

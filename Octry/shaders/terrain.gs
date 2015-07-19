@@ -27,7 +27,11 @@ void main()
 	{
 		if (vs_data[0].data[i] == 1)
 		{
-			vec4 lleft = vec4((i&4)?s:0, (i&2)?s:0, (i&1)?s:0,0) + pos;
+			vec4 lleft = /*vec4((i&4)?s:0, (i&2)?s:0, (i&1)?s:0,0) + */pos;
+			int t = i;
+			if (t >= 4) {t -= 4; lleft += vec4(s,0,0,0);}
+			if (t >= 2) {t -= 2; lleft += vec4(0,s,0,0);}
+			if (t >= 1) {t -= 1; lleft += vec4(0,0,s,0);}
 			gl_Position = lleft + vec4(0,0,0,0);
 			gl_Position = modelview(gl_Position);
 			EmitVertex();
