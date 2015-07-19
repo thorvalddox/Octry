@@ -6,6 +6,8 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 
+#include <unistd.h>
+
 int gui_init();
 int gui_draw();
 int gui_close();
@@ -70,6 +72,8 @@ int main(int argc, char *argv[]) {
             {
                 gui_draw();
                 glXSwapBuffers(dpy, win);
+                usleep(50000);
+
             }
             fprintf (stderr, "Exposed: %i\n", glGetError());
         }

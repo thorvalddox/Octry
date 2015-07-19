@@ -22,5 +22,5 @@ void main()
 	}
 	float fract = 0;
 	gl_Position = vec4(pos/1024., 1.0);
-	vs_color = vec4(1.0,fract,fract,1.0);
+	vs_color = vec4(1,fract,fract,1.0);
 }

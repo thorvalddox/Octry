@@ -70,7 +70,6 @@ int gui_init()
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cube<int>) * glworlddata.size(), (GLvoid*) &glworlddata[0], GL_DYNAMIC_DRAW);
-	glEnable(GL_DEPTH_TEST); 
 	glVertexAttribPointer(0, 3, GL_INT,GL_FALSE, sizeof(cube<int>),(GLvoid*) 0);
 	glVertexAttribIPointer(1, 1, GL_INT, sizeof(cube<int>),(GLvoid*) 12);
 	for (int i = 0; i < 8; i++)
@@ -84,6 +83,8 @@ int gui_init()
 	checkerrors;
 	checkerrors;
 	std::cerr << "Worldsize: " << glworlddata.size() << "\noffset" <<offsetof (cube<int>, data[1]) << std::endl;
+	glEnable(GL_DEPTH_TEST); 
+	glDepthMask(GL_TRUE);
 	for (int i = 0; i < 10; i++)
 	{
 		std::cerr << glworlddata[i].x << ' ' << glworlddata[i].y << ' ' << glworlddata[i].z << ' ' << glworlddata[i].depth << std::endl;
