@@ -66,8 +66,11 @@ int main(int argc, char *argv[]) {
         if(xev.type == Expose) {
             XGetWindowAttributes(dpy, win, &gwa);
             glViewport(0, 0, gwa.width, gwa.height);
-            gui_draw();
-            glXSwapBuffers(dpy, win);
+            while (1)
+            {
+                gui_draw();
+                glXSwapBuffers(dpy, win);
+            }
             fprintf (stderr, "Exposed: %i\n", glGetError());
         }
 

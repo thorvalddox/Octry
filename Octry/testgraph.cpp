@@ -37,6 +37,7 @@ int altmain()
 GLuint program;
 GLuint vao;
 GLuint buffer;
+GLuint locstep;
 
 void DrawAQuad() {
 	glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -79,12 +80,8 @@ int gui_init()
 	for (int i = 0; i < 8; i++)
 	glEnableVertexAttribArray(2 + i);
 	glPointSize(2);
+	locstep = glGetUniformLocation(program, "step");
 	checkerrors;
-}
-int gui_draw()
-{
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glUseProgram(program);
 	checkerrors;
 	std::cerr << "Worldsize: " << glworlddata.size() << "\noffset" <<offsetof (cube<int>, data[1]) << std::endl;
 	for (int i = 0; i < 10; i++)
@@ -94,6 +91,15 @@ int gui_draw()
 			std::cerr << glworlddata[i].data[j] << ' ';
 		std::cerr << std::endl;
 	}
+}
+int gui_draw()
+{
+	static float step = 0;
+	step += 0.01;
+	glUniform1f(locstep, step);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glUseProgram(program);
+	
 	glDrawArrays(GL_POINTS, 0, glworlddata.size());
 	
 }
