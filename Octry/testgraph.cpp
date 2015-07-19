@@ -26,7 +26,7 @@ int altmain()
     std::ofstream outfile("worldgen.txt");
     worldgen::HeightMap heightmap(10, 40, 10);
     heightmap.calculate();
-    worldmap = heightmap.build_octree();
+    worldmap = heightmap.build_slow();
     glworlddata = worldmap->graphify();
     std::cout << "Done\n";
     std::cout << "Size: " << (worldmap->getsize() * sizeof(oc_node<int>)) << "\n";

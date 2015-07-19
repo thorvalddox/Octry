@@ -13,7 +13,7 @@ debug:
 profile:
 	$(eval OPTIONS+=-g -pg -Ofast)
 release: 
-	$(eval OPTIONS+=-Ofast -static -s)
+	$(eval OPTIONS+=-Ofast -s)
 
 opengl: LIBS+= -lGL -lX11
 opengl: testgraph.o graphics/gr_linux.o $(MODULES)
