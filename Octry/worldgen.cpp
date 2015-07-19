@@ -173,6 +173,7 @@ namespace worldgen
 
     octree<int> * HeightMap::build_slow()
     {
+        calculate();
         octree<int>* tree = new octree<int>(layers, 0);
         int x, y, z;
         std::cout << std::endl;
