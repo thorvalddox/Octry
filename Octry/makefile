@@ -4,7 +4,7 @@ COMPILER=g++
 OPTIONS=-Wall -std=c++11
 LIBS=-LOctree/
 HEADERS=-IOctree/
-MODULES=worldgen.o Octree/octree.o tools.o xml/pugixml.o
+MODULES=worldgen.o Octree/octree.o tools.o xml/pugixml.o graphics/shaderutil.o
 
 all: release testworld.out testworldgen.out
 
@@ -14,8 +14,11 @@ profile:
 	$(eval OPTIONS+=-g -pg -Ofast)
 release: 
 	$(eval OPTIONS+=-Ofast -static -s)
-opengl:
-	$(eval LIBS+=-lGL -lX11)
+
+opengl: LIBS+= -lGL -lX11
+opengl: testgraph.o graphics/gr_linux.o $(MODULES)
+	$(COMPILER) testgraph.o graphics/gr_linux.o $(MODULES) -o build/testgraph.out $(LIBS) $(OPTIONS) -std=c++11;
+
 
 
 clean: 

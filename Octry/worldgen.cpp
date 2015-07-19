@@ -78,12 +78,14 @@ Square::Square(const point & topleft, int layers, bool tilted)
 
 void Square::apply(LandScape & landscape,double noise)
 {
-    vector<double> heights;
+    double sum = 0.0;
+    double min = landscape.get(this->corners[0]);
     for (point i : this->corners) {
-        heights.push_back(landscape.get(i));
+        double corner = landscape.get(i);
+        if (min > corner) min = corner;
+        sum += corner;   
     }
-    double newheight = std::accumulate(heights.begin(), heights.end(), 0.0) -
-                       *std::min_element(heights.begin(), heights.end());
+    double newheight = sum - min;
     landscape.set(midpoint, newheight/3 + noise * size * gauss());
 
 }
@@ -138,10 +140,10 @@ octree<int> * HeightMap::build_octree()
         int size = (1<<layer);
         cout << "building layer " << layer << std::endl;
         LandScape * next = landscape.compress(layer);
-        std::stringstream filename;
-        filename << "compress" << layer << ".txt";
-        std::ofstream outfile(filename.str());
-        next->print(&outfile);
+        //std::stringstream filename;
+        //filename << "compress" << layer << ".txt";
+        //std::ofstream outfile(filename.str());
+        //next->print(&outfile);
         //build octree
         for (int x = 0; x<next->size; x+=size) { //loop over x, but select blocks
             for (int y = 0; y<next->size; y+=size) { // select block
@@ -161,8 +163,10 @@ octree<int> * HeightMap::build_octree()
 
             }
         }
+        delete prev; // DON'T FORGET TO DELETE YOUR MEMORY plz.
         prev = next;
     }
+    delete prev;
     return(wmap);
 }
 }

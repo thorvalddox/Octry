@@ -207,6 +207,38 @@ int octree<T>::check(node_pos n)
 	return 0;
 }
 
+template<class T>
+std::vector<cube<T> > octree<T>::graphify()
+{
+	std::vector<cube<T> > res;
+	for (oc_node<T> node : array)
+	{
+		cube<T> next;
+		unsigned pos = res.size();
+		int i;
+		for (i = 0; i < 8; i++)
+		{
+			if (node.sub[i].next) 
+				next.data[i] = 9;
+			else
+				next.data[i] = node.sub[i].data;
+		}
+		next.x = 0;
+		next.y = 0;
+		next.z = 0;
+		next.depth = node.depth;
+		while (pos)
+		{
+			if (array[pos].offset&4) next.x += 1<<(depth - array[pos].depth);
+			if (array[pos].offset&2) next.y += 1<<(depth - array[pos].depth);
+			if (array[pos].offset&1) next.z += 1<<(depth - array[pos].depth);
+			pos = array[pos].parent;
+		}
+		res.push_back(next);
+		//std::cout << next.x << ' ' << next.y << ' ' << next.z << ' ' << next.depth << '\n';
+	}
+	return res;
+}
 
 // Implementations
 

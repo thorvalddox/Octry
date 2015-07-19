@@ -35,6 +35,12 @@ public:
 	node_pos &parentref(octree<T> tree);
 };
 
+template<class T>
+struct cube{
+	int x,y,z,depth;
+	T data [8];
+};
+
 template <class T>
 class octree {
 private:
@@ -60,4 +66,6 @@ public:
 	void set(T t, int x, int y, int z);
 	T get(int x, int y, int z);
 	void print();
+
+	std::vector<cube<T> > graphify();
 };
